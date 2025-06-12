@@ -56,6 +56,7 @@ export const chatRequestSchema = z.object({
   message: z.string().min(1),
   modelIds: z.array(z.string()).min(1),
   conversationId: z.number().optional(),
+  enableWebSearch: z.boolean().optional().default(false),
 });
 
 export const chatResponseSchema = z.object({
@@ -65,6 +66,11 @@ export const chatResponseSchema = z.object({
     content: z.string(),
     responseTime: z.number(),
     error: z.string().optional(),
+    searchResults: z.array(z.object({
+      title: z.string(),
+      url: z.string(),
+      snippet: z.string(),
+    })).optional(),
   })),
 });
 

@@ -6,6 +6,7 @@ import { z } from "zod";
 import OpenAI from "openai";
 import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { searchWeb, type SearchResult } from './webSearch';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -57,7 +58,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             break;
         }
       } catch (error) {
-        console.error(`API key validation failed for ${provider}:`, error.message);
+        console.error(`API key validation failed for ${provider}:`, (error as Error).message);
       }
 
       res.json({ valid: isValid });
@@ -151,7 +152,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/chat", async (req, res) => {
     try {
       const validatedData = chatRequestSchema.parse(req.body);
-      const { message, modelIds, conversationId } = validatedData;
+      const { message, modelIds, conversationId, enableWebSearch } = validatedData;
 
       // Create or get conversation
       let conversation;
@@ -176,12 +177,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         responseTime: null,
       });
 
+      // Perform web search if enabled
+      let searchResults: SearchResult[] = [];
+      if (enableWebSearch) {
+        try {
+          searchResults = await searchWeb(message, 5);
+        } catch (error) {
+          console.error('Web search error:', error);
+        }
+      }
+
       // Send requests to all selected models
       const responses = await Promise.allSettled(
         modelIds.map(async (modelId) => {
           const startTime = Date.now();
           try {
-            const response = await sendToModel(modelId, message, openai, anthropic, googleAI);
+            const enhancedMessage = enableWebSearch && searchResults.length > 0 
+              ? `${message}\n\nContext from web search:\n${searchResults.map(r => `${r.title}: ${r.snippet}`).join('\n')}`
+              : message;
+              
+            const response = await sendToModel(modelId, enhancedMessage, openai, anthropic, googleAI);
             const responseTime = Date.now() - startTime;
 
             // Save assistant message
@@ -198,6 +213,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               modelId,
               content: response,
               responseTime,
+              searchResults: enableWebSearch ? searchResults : undefined,
             };
           } catch (error) {
             const responseTime = Date.now() - startTime;
@@ -207,7 +223,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               modelId,
               content: "",
               responseTime,
-              error: error.message,
+              error: (error as Error).message,
+              searchResults: enableWebSearch ? searchResults : undefined,
             };
           }
         })

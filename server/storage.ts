@@ -117,6 +117,9 @@ export class MemStorage implements IStorage {
       ...insertMessage,
       id,
       createdAt: new Date(),
+      modelId: insertMessage.modelId ?? null,
+      provider: insertMessage.provider ?? null,
+      responseTime: insertMessage.responseTime ?? null,
     };
     this.messages.set(id, message);
     return message;
