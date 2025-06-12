@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Send } from "lucide-react";
+import { Send, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import ModelSelector from "./ModelSelector";
 
 interface MessageInputProps {
   selectedModels: string[];
   onSelectedModelsChange: (models: string[]) => void;
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, enableWebSearch?: boolean) => void;
   isLoading: boolean;
 }
 
@@ -18,13 +20,14 @@ export default function MessageInput({
   isLoading 
 }: MessageInputProps) {
   const [message, setMessage] = useState("");
+  const [enableWebSearch, setEnableWebSearch] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || selectedModels.length === 0 || isLoading) return;
     
-    onSendMessage(message.trim());
+    onSendMessage(message.trim(), enableWebSearch);
     setMessage("");
   };
 
@@ -55,6 +58,24 @@ export default function MessageInput({
         selectedModels={selectedModels}
         onSelectedModelsChange={onSelectedModelsChange}
       />
+      
+      {/* Web Search Toggle */}
+      <div className="flex items-center space-x-3 px-1">
+        <div className="flex items-center space-x-2">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <Label htmlFor="web-search" className="text-sm">Web Search</Label>
+          <Switch
+            id="web-search"
+            checked={enableWebSearch}
+            onCheckedChange={setEnableWebSearch}
+          />
+        </div>
+        {enableWebSearch && (
+          <span className="text-xs text-muted-foreground">
+            Responses will include current web information
+          </span>
+        )}
+      </div>
       
       <form onSubmit={handleSubmit} className="flex items-end space-x-3">
         <div className="flex-1 relative">

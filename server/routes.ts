@@ -52,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             break;
           case 'google':
             const googleTest = new GoogleGenerativeAI(apiKey);
-            const model = googleTest.getGenerativeModel({ model: 'gemini-1.0-pro' });
+            const model = googleTest.getGenerativeModel({ model: 'gemini-1.5-flash' });
             await model.generateContent('test');
             isValid = true;
             break;

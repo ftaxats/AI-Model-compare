@@ -31,17 +31,17 @@ export default function ChatInterface() {
     }
   }, [messages]);
 
-  const handleSendMessage = async (message: string) => {
+  const handleSendMessage = async (message: string, enableWebSearch?: boolean) => {
     if (selectedModels.length === 0) {
       return;
     }
 
     if (debugMode) {
-      console.log("Sending message:", message, "to models:", selectedModels);
+      console.log("Sending message:", message, "to models:", selectedModels, "with web search:", enableWebSearch);
     }
 
     setShowWelcome(false);
-    await sendMessage(message, selectedModels);
+    await sendMessage(message, selectedModels, enableWebSearch);
   };
 
   const handlePresetSelection = (modelIds: string[]) => {

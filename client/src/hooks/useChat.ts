@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/apiClient";
 import type { Message, Conversation, ChatRequest } from "@shared/schema";
@@ -24,7 +24,7 @@ export function useChat() {
   });
 
   // Update messages when conversation data changes
-  useState(() => {
+  useEffect(() => {
     if (conversationData?.messages) {
       setMessages(conversationData.messages);
     }
@@ -76,7 +76,7 @@ export function useChat() {
     },
   });
 
-  const sendMessage = useCallback(async (content: string, modelIds: string[]) => {
+  const sendMessage = useCallback(async (content: string, modelIds: string[], enableWebSearch?: boolean) => {
     if (!content.trim() || modelIds.length === 0) return;
 
     // Add user message immediately
@@ -98,6 +98,7 @@ export function useChat() {
       message: content.trim(),
       modelIds,
       conversationId: currentConversationId || undefined,
+      enableWebSearch: enableWebSearch || false,
     });
   }, [currentConversationId, sendMessageMutation]);
 

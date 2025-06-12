@@ -135,6 +135,7 @@ export class MemStorage implements IStorage {
     const modelConfig: ModelConfig = {
       ...config,
       config: null,
+      isCustom: config.isCustom ?? false,
     };
     this.modelConfigs.set(config.id, modelConfig);
     return modelConfig;

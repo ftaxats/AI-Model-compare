@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Bot, User, Clock } from "lucide-react";
+import { Bot, User, Clock, ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import type { Message } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import type { ModelConfig } from "@shared/schema";
