@@ -1,13 +1,35 @@
-// Vercel serverless function entry point
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import express from 'express';
-import { storage } from '../server/storage';
-import { chatRequestSchema } from '../shared/schema';
-import { z } from 'zod';
 import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { searchWeb, type SearchResult } from '../server/webSearch';
+
+// In-memory storage for demo
+const conversations = new Map();
+const messages = new Map();
+let conversationIdCounter = 1;
+let messageIdCounter = 1;
+
+// Default models
+const DEFAULT_MODELS = [
+  { id: "gpt-4o", name: "GPT-4o", provider: "openai", isLatest: true },
+  { id: "gpt-4o-mini", name: "GPT-4o Mini", provider: "openai" },
+  { id: "claude-3-5-sonnet-20241022", name: "Claude 3.5 Sonnet", provider: "anthropic", isLatest: true },
+  { id: "claude-3-haiku-20240307", name: "Claude 3 Haiku", provider: "anthropic" },
+  { id: "gemini-2.0-flash-exp", name: "Gemini 2.0 Flash", provider: "google", isLatest: true },
+  { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash", provider: "google" }
+];
+
+// Simple web search using DuckDuckGo instant answer API
+async function searchWeb(query: string): Promise<any[]> {
+  try {
+    const response = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
+    const data = await response.json();
+    return data.RelatedTopics?.slice(0, 3) || [];
+  } catch (error) {
+    console.error('Search error:', error);
+    return [];
+  }
+}
 
 // Initialize AI clients
 const openai = new OpenAI({
@@ -28,8 +50,7 @@ function getModelProvider(modelId: string): string {
   if (modelId.startsWith('claude-')) return 'anthropic';
   if (modelId.startsWith('gemini-')) return 'google';
   
-  const models = Array.from((storage as any).modelConfigs.values());
-  const model = models.find((m: any) => m.id === modelId);
+  const model = DEFAULT_MODELS.find(m => m.id === modelId);
   return model?.provider || 'unknown';
 }
 
@@ -87,66 +108,43 @@ export default async (req: VercelRequest, res: VercelResponse) => {
     // Handle different API routes
     if (url?.startsWith('/api/models')) {
       if (method === 'GET') {
-        const models = await storage.getAllModelConfigs();
-        res.json(models);
-        return;
-      }
-      
-      if (method === 'POST') {
-        const { id, name, provider } = req.body;
-        if (!id || !name || !provider) {
-          res.status(400).json({ error: "ID, name, and provider are required" });
-          return;
-        }
-        const model = await storage.createModelConfig({
-          id, name, provider, isCustom: true,
-        });
-        res.json(model);
+        res.json(DEFAULT_MODELS);
         return;
       }
     }
 
     if (url?.startsWith('/api/conversations')) {
       if (method === 'GET') {
-        const conversations = await storage.getAllConversations();
-        res.json(conversations);
+        res.json(Array.from(conversations.values()));
         return;
       }
     }
 
     if (url === '/api/chat' && method === 'POST') {
-      const validatedData = chatRequestSchema.parse(req.body);
-      const { message, modelIds, conversationId, enableWebSearch } = validatedData;
+      const { message, modelIds, conversationId, enableWebSearch } = req.body;
 
       // Create or get conversation
       let conversation;
       if (conversationId) {
-        conversation = await storage.getConversation(conversationId);
+        conversation = conversations.get(conversationId);
         if (!conversation) {
           res.status(404).json({ error: "Conversation not found" });
           return;
         }
       } else {
-        conversation = await storage.createConversation({
+        conversation = {
+          id: conversationIdCounter++,
           title: message.slice(0, 50) + (message.length > 50 ? "..." : ""),
-        });
+          createdAt: new Date().toISOString()
+        };
+        conversations.set(conversation.id, conversation);
       }
 
-      // Add user message
-      await storage.createMessage({
-        conversationId: conversation.id,
-        role: "user",
-        content: message,
-        modelId: null,
-        provider: null,
-        responseTime: null,
-      });
-
       // Perform web search if enabled
-      let searchResults: SearchResult[] = [];
+      let searchResults: any[] = [];
       if (enableWebSearch) {
         try {
-          searchResults = await searchWeb(message, 5);
+          searchResults = await searchWeb(message);
         } catch (error) {
           console.error('Web search error:', error);
         }
@@ -158,21 +156,11 @@ export default async (req: VercelRequest, res: VercelResponse) => {
           const startTime = Date.now();
           try {
             const enhancedMessage = enableWebSearch && searchResults.length > 0 
-              ? `${message}\n\nContext from web search:\n${searchResults.map(r => `${r.title}: ${r.snippet}`).join('\n')}`
+              ? `${message}\n\nContext from web search:\n${searchResults.map(r => r.Text || r.FirstURL || '').filter(Boolean).join('\n')}`
               : message;
               
             const response = await sendToModel(modelId, enhancedMessage, openai, anthropic, googleAI);
             const responseTime = Date.now() - startTime;
-
-            // Save assistant message
-            await storage.createMessage({
-              conversationId: conversation.id,
-              role: "assistant",
-              content: response,
-              modelId,
-              provider: getModelProvider(modelId),
-              responseTime,
-            });
 
             return {
               modelId,

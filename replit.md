@@ -27,6 +27,8 @@ A minimal ChatGPT-like interface that integrates multiple AI models (ChatGPT, Cl
 - Model Configs: Available AI models (default + custom)
 
 ## Recent Changes
+- **2025-06-24**: Simplified Vercel serverless function to eliminate build dependencies
+- **2025-06-24**: Used standard Node.js runtime instead of custom @vercel/node versions
 - **2025-06-24**: Fixed Vercel deployment runtime error and configuration
 - **2025-06-24**: Updated deployment button with correct repository URL and environment variables
 - **2025-06-24**: Rewrote serverless function handler for proper Vercel compatibility
