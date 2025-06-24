@@ -57,7 +57,7 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-6">
       {messages.map((message) => (
         <div
           key={message.id}
@@ -67,7 +67,7 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
         >
           {message.role === 'user' ? (
             <div className="bg-primary text-primary-foreground px-4 py-3 rounded-2xl rounded-br-sm max-w-3xl">
-              <div className="text-sm whitespace-pre-wrap">{message.content}</div>
+              <div className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</div>
             </div>
           ) : (
             <>
@@ -84,7 +84,7 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
                     </div>
                   )}
                 </div>
-                <div className="text-sm whitespace-pre-wrap">{message.content}</div>
+                <div className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</div>
               </Card>
             </>
           )}
@@ -112,7 +112,7 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
         </div>
       )}
       
-      <div ref={messagesEndRef} />
+      <div ref={messagesEndRef} className="h-4" />
     </div>
   );
 }

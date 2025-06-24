@@ -121,7 +121,7 @@ export default function ChatInterface() {
         onDebugModeChange={setDebugMode}
       />
 
-      <div className="pt-20 pb-32 min-h-screen">
+      <div className="pt-20 pb-48 min-h-screen">
         <div className="max-w-4xl mx-auto px-4">
           {/* Welcome Message */}
           {showWelcome && (
@@ -152,14 +152,16 @@ export default function ChatInterface() {
 
           {/* Chat Messages */}
           {!showWelcome && (
-            <MessageList messages={messages} isLoading={isLoading} />
+            <div className="pb-8">
+              <MessageList messages={messages} isLoading={isLoading} />
+            </div>
           )}
         </div>
       </div>
 
       {/* Input Section */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/80 dark:bg-dark-bg/80 backdrop-blur-md border-t border-border dark:border-dark-border">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-background/95 dark:bg-dark-bg/95 backdrop-blur-md border-t border-border dark:border-dark-border shadow-lg">
+        <div className="max-w-4xl mx-auto px-4 py-6">
           <MessageInput
             selectedModels={selectedModels}
             onSelectedModelsChange={setSelectedModels}

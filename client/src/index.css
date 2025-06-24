@@ -78,6 +78,26 @@
   }
 }
 
+/* Smooth scrolling for the entire app */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better text selection */
+::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Improve readability with better line spacing */
+.message-content {
+  line-height: 1.6;
+}
+
+/* Ensure proper spacing around fixed elements */
+.scroll-margin {
+  scroll-margin-bottom: 200px;
+}
+
 .backdrop-blur-md {
   backdrop-filter: blur(12px);
 }

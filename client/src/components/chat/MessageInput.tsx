@@ -53,17 +53,17 @@ export default function MessageInput({
   const canSend = message.trim() && selectedModels.length > 0 && !isLoading;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <ModelSelector
         selectedModels={selectedModels}
         onSelectedModelsChange={onSelectedModelsChange}
       />
       
       {/* Web Search Toggle */}
-      <div className="flex items-center space-x-3 px-1">
+      <div className="flex items-center space-x-3 px-2 py-2 bg-background/50 dark:bg-dark-card/50 rounded-lg border border-border/30 dark:border-dark-border/30">
         <div className="flex items-center space-x-2">
           <Search className="h-4 w-4 text-muted-foreground" />
-          <Label htmlFor="web-search" className="text-sm">Web Search</Label>
+          <Label htmlFor="web-search" className="text-sm font-medium">Web Search</Label>
           <Switch
             id="web-search"
             checked={enableWebSearch}
@@ -85,14 +85,14 @@ export default function MessageInput({
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Message AI models..."
-            className="resize-none pr-12 rounded-xl border-border dark:border-dark-border bg-background dark:bg-dark-card min-h-[44px] max-h-[120px]"
+            className="resize-none pr-12 rounded-xl border-border dark:border-dark-border bg-background dark:bg-dark-card min-h-[48px] max-h-[120px] text-base leading-relaxed"
             rows={1}
           />
           <Button
             type="submit"
             size="icon"
             disabled={!canSend}
-            className="absolute right-2 bottom-2 h-8 w-8 rounded-md bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground"
+            className="absolute right-2 bottom-2 h-8 w-8 rounded-md bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground transition-all"
           >
             <Send className="h-4 w-4" />
           </Button>
