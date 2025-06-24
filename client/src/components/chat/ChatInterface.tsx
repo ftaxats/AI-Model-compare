@@ -51,16 +51,28 @@ export default function ChatInterface() {
 
   const presetCombinations = [
     {
-      name: "GPT-4o + Claude Sonnet",
-      models: ["gpt-4o", "claude-sonnet-4-20250514"],
+      name: "GPT-4.1 + Claude Sonnet 4",
+      models: ["gpt-4.1", "claude-sonnet-4-20250514"],
     },
     {
       name: "All Premium Models",
-      models: ["gpt-4o", "claude-sonnet-4-20250514", "gemini-1.5-pro"],
+      models: ["gpt-4.1", "claude-sonnet-4-20250514", "gemini-2.5-pro"],
     },
     {
-      name: "Fast Models",
-      models: ["gpt-3.5-turbo", "claude-3-haiku-20240307", "gemini-1.5-flash"],
+      name: "Best Value Models",
+      models: ["gpt-4.1-mini", "claude-3-5-haiku-20241022", "gemini-2.5-flash"],
+    },
+    {
+      name: "Ultra Fast & Cheap",
+      models: ["gpt-4.1-nano", "claude-3-5-haiku-20241022", "gemini-2.0-flash-lite"],
+    },
+    {
+      name: "Balanced Performance",
+      models: ["gpt-4o", "claude-3-5-sonnet-20241022", "gemini-2.0-flash"],
+    },
+    {
+      name: "Flash Models Only",
+      models: ["gemini-2.5-flash", "gemini-2.0-flash"],
     },
   ];
 

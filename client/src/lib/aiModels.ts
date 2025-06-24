@@ -8,40 +8,40 @@ export interface ModelConfig {
 }
 
 export const DEFAULT_MODELS: ModelConfig[] = [
-  // OpenAI models - the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-  {
-    id: "gpt-4o",
-    name: "GPT-4o",
-    provider: "openai",
-    description: "Most capable OpenAI model",
-    isLatest: true,
-  },
+  // OpenAI models - Latest GPT-4.1 series with improved performance and cost efficiency
   {
     id: "gpt-4.1",
     name: "GPT-4.1",
     provider: "openai",
-    description: "Fast and cost-effective model",
-  },
-  {
-    id: "gpt-4o-mini",
-    name: "gpt-4o-mini",
-    provider: "openai",
-    description: "Fast and cost-effective model",
+    description: "Latest flagship OpenAI model with enhanced reasoning",
+    isLatest: true,
   },
   {
     id: "gpt-4.1-mini",
-    name: "gpt-4.1-mini",
+    name: "GPT-4.1 Mini",
     provider: "openai",
-    description: "Fast and cost-effective model",
+    description: "Cost-effective GPT-4.1 with excellent performance",
   },
   {
-    id: "gpt-3.5-turbo",
-    name: "GPT-3.5 Turbo",
+    id: "gpt-4.1-nano",
+    name: "GPT-4.1 Nano",
     provider: "openai",
-    description: "Fast and cost-effective model",
+    description: "Ultra-fast and economical GPT-4.1 variant",
+  },
+  {
+    id: "gpt-4o",
+    name: "GPT-4o",
+    provider: "openai",
+    description: "Multimodal OpenAI model with vision capabilities",
+  },
+  {
+    id: "gpt-4o-mini",
+    name: "GPT-4o Mini",
+    provider: "openai",
+    description: "Affordable multimodal model",
   },
 
-  // Anthropic models - the newest Anthropic model is "claude-sonnet-4-20250514" which was released May 14, 2025. Use this by default unless user has already selected claude-3-7-sonnet-20250219
+  // Anthropic models - Latest Claude 4 series
   {
     id: "claude-sonnet-4-20250514",
     name: "Claude Sonnet 4",
@@ -53,7 +53,7 @@ export const DEFAULT_MODELS: ModelConfig[] = [
     id: "claude-3-5-sonnet-20241022",
     name: "Claude 3.5 Sonnet",
     provider: "anthropic",
-    description: "Advanced reasoning and analysis",
+    description: "Advanced reasoning and code generation",
   },
   {
     id: "claude-3-5-haiku-20241022",
@@ -61,38 +61,32 @@ export const DEFAULT_MODELS: ModelConfig[] = [
     provider: "anthropic",
     description: "Fast and efficient Claude model",
   },
-  {
-    id: "claude-3-opus-20240229",
-    name: "Claude 3 Opus",
-    provider: "anthropic",
-    description: "Most capable Claude 3 model",
-  },
-  {
-    id: "claude-3-haiku-20240307",
-    name: "Claude 3 Haiku",
-    provider: "anthropic",
-    description: "Fastest Claude 3 model",
-  },
 
-  // Google models
+  // Google models - Latest Gemini 2.5 and 2.0 series
   {
-    id: "gemini-2.0-flash-001",
-    name: "google/gemini-2.0-flash-001",
+    id: "gemini-2.5-pro",
+    name: "Gemini 2.5 Pro",
     provider: "google",
-    description: "Most capable Gemini model",
+    description: "Most advanced Gemini model with thinking capabilities",
     isLatest: true,
   },
   {
-    id: "gemini-2.5-pro-preview-05-06",
-    name: "google/gemini-2.5-pro-preview-05-06",
+    id: "gemini-2.5-flash",
+    name: "Gemini 2.5 Flash",
     provider: "google",
-    description: "Fast and efficient Gemini model",
+    description: "Best price-performance ratio in Gemini lineup",
   },
   {
-    id: "gemini-2.0-flash-lite-001",
-    name: "google/gemini-2.0-flash-lite-001",
+    id: "gemini-2.0-flash",
+    name: "Gemini 2.0 Flash",
     provider: "google",
-    description: "Original Gemini Pro model",
+    description: "Low-latency multimodal model",
+  },
+  {
+    id: "gemini-2.0-flash-lite",
+    name: "Gemini 2.0 Flash Lite",
+    provider: "google",
+    description: "Most cost-efficient Gemini model",
   },
 ];
 

@@ -1,17 +1,30 @@
-import { conversations, messages, modelConfigs, type Conversation, type Message, type ModelConfig, type InsertConversation, type InsertMessage, type InsertModelConfig } from "@shared/schema";
+import {
+  conversations,
+  messages,
+  modelConfigs,
+  type Conversation,
+  type Message,
+  type ModelConfig,
+  type InsertConversation,
+  type InsertMessage,
+  type InsertModelConfig,
+} from "@shared/schema";
 
 export interface IStorage {
   // Conversations
   createConversation(conversation: InsertConversation): Promise<Conversation>;
   getConversation(id: number): Promise<Conversation | undefined>;
   getAllConversations(): Promise<Conversation[]>;
-  updateConversation(id: number, updates: Partial<InsertConversation>): Promise<Conversation | undefined>;
+  updateConversation(
+    id: number,
+    updates: Partial<InsertConversation>,
+  ): Promise<Conversation | undefined>;
   deleteConversation(id: number): Promise<boolean>;
 
   // Messages
   createMessage(message: InsertMessage): Promise<Message>;
   getMessagesByConversation(conversationId: number): Promise<Message[]>;
-  
+
   // Model Configs
   createModelConfig(config: InsertModelConfig): Promise<ModelConfig>;
   getAllModelConfigs(): Promise<ModelConfig[]>;
@@ -38,25 +51,71 @@ export class MemStorage implements IStorage {
 
   private initializeDefaultModels() {
     const defaultModels = [
-      // OpenAI models
-      { id: 'gpt-4o', name: 'GPT-4o', provider: 'openai', isCustom: false },
-      { id: 'gpt-4-turbo', name: 'GPT-4 Turbo', provider: 'openai', isCustom: false },
-      { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', provider: 'openai', isCustom: false },
-      
-      // Anthropic models - the newest Anthropic model is "claude-sonnet-4-20250514" which was released May 14, 2025. Use this by default unless user has already selected claude-3-7-sonnet-20250219
-      { id: 'claude-sonnet-4-20250514', name: 'Claude Sonnet 4', provider: 'anthropic', isCustom: false },
-      { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', provider: 'anthropic', isCustom: false },
-      { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku', provider: 'anthropic', isCustom: false },
-      { id: 'claude-3-opus-20240229', name: 'Claude 3 Opus', provider: 'anthropic', isCustom: false },
-      { id: 'claude-3-haiku-20240307', name: 'Claude 3 Haiku', provider: 'anthropic', isCustom: false },
-      
-      // Google models
-      { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', provider: 'google', isCustom: false },
-      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', provider: 'google', isCustom: false },
-      { id: 'gemini-1.0-pro', name: 'Gemini 1.0 Pro', provider: 'google', isCustom: false },
+      // OpenAI models - Latest GPT-4.1 series
+      { id: "gpt-4.1", name: "GPT-4.1", provider: "openai", isCustom: false },
+      {
+        id: "gpt-4.1-mini",
+        name: "GPT-4.1 Mini",
+        provider: "openai",
+        isCustom: false,
+      },
+      {
+        id: "gpt-4.1-nano",
+        name: "GPT-4.1 Nano",
+        provider: "openai",
+        isCustom: false,
+      },
+      { id: "gpt-4o", name: "GPT-4o", provider: "openai", isCustom: false },
+
+      // Anthropic models - Latest Claude series
+      {
+        id: "claude-sonnet-4-20250514",
+        name: "Claude Sonnet 4",
+        provider: "anthropic",
+        isCustom: false,
+      },
+      {
+        id: "claude-3-5-sonnet-20241022",
+        name: "Claude 3.5 Sonnet",
+        provider: "anthropic",
+        isCustom: false,
+      },
+      {
+        id: "claude-3-5-haiku-20241022",
+        name: "Claude 3.5 Haiku",
+        provider: "anthropic",
+        isCustom: false,
+      },
+
+      // Google models - Latest Gemini 2.5 and 2.0 series
+      {
+        id: "gemini-2.5-flash",
+        name: "Gemini 2.5 Flash",
+        provider: "google",
+        isCustom: false,
+      },
+      {
+        id: "gemini-2.5-pro",
+        name: "Gemini 2.5 Pro",
+        provider: "google",
+        isCustom: false,
+      },
+      {
+        id: "gemini-2.0-flash",
+        name: "Gemini 2.0 Flash",
+        provider: "google",
+        isCustom: false,
+      },
+      {
+        id: "gemini-2.0-flash-lite",
+        name: "Gemini 2.0 Flash Lite",
+        provider: "google",
+        isCustom: false,
+      },
     ];
 
-    defaultModels.forEach(model => {
+    // Store each model in the modelConfigs map
+    defaultModels.forEach((model) => {
       this.modelConfigs.set(model.id, {
         ...model,
         config: null,
@@ -64,7 +123,9 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async createConversation(insertConversation: InsertConversation): Promise<Conversation> {
+  async createConversation(
+    insertConversation: InsertConversation,
+  ): Promise<Conversation> {
     const id = this.conversationIdCounter++;
     const now = new Date();
     const conversation: Conversation = {
@@ -82,12 +143,15 @@ export class MemStorage implements IStorage {
   }
 
   async getAllConversations(): Promise<Conversation[]> {
-    return Array.from(this.conversations.values()).sort((a, b) => 
-      b.updatedAt.getTime() - a.updatedAt.getTime()
+    return Array.from(this.conversations.values()).sort(
+      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime(),
     );
   }
 
-  async updateConversation(id: number, updates: Partial<InsertConversation>): Promise<Conversation | undefined> {
+  async updateConversation(
+    id: number,
+    updates: Partial<InsertConversation>,
+  ): Promise<Conversation | undefined> {
     const existing = this.conversations.get(id);
     if (!existing) return undefined;
 
@@ -127,7 +191,7 @@ export class MemStorage implements IStorage {
 
   async getMessagesByConversation(conversationId: number): Promise<Message[]> {
     return Array.from(this.messages.values())
-      .filter(message => message.conversationId === conversationId)
+      .filter((message) => message.conversationId === conversationId)
       .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }
 
