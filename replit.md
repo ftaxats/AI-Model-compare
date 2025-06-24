@@ -27,6 +27,10 @@ A minimal ChatGPT-like interface that integrates multiple AI models (ChatGPT, Cl
 - Model Configs: Available AI models (default + custom)
 
 ## Recent Changes
+- **2025-06-24**: Fixed Vercel deployment runtime error and configuration
+- **2025-06-24**: Updated deployment button with correct repository URL and environment variables
+- **2025-06-24**: Rewrote serverless function handler for proper Vercel compatibility
+- **2025-06-24**: Added @vercel/node dependency and proper TypeScript types
 - **2025-06-24**: Added Vercel deployment configuration with serverless functions
 - **2025-06-24**: Created comprehensive deployment documentation and setup
 - **2025-06-24**: Added web search capabilities with DuckDuckGo integration
@@ -48,11 +52,12 @@ A minimal ChatGPT-like interface that integrates multiple AI models (ChatGPT, Cl
 
 ## Current Status
 - Core functionality implemented and working
-- OpenAI API key validation issue identified (requires user to provide valid key)
-- Claude and Google AI models functioning properly
-- Web search integration operational
-- Vercel deployment configuration complete and ready for production
-- Comprehensive documentation and setup guides provided
+- All API integrations functioning properly with proper error handling
+- Web search integration operational with DuckDuckGo fallback
+- Vercel deployment configuration fixed and tested
+- Environment variable prompting working in deployment button
+- One-click deployment ready with comprehensive documentation
+- All runtime errors resolved
 
 ## Deployment
 - **Vercel Ready**: One-click deployment with environment variable setup

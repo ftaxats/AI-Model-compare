@@ -40,7 +40,7 @@ A minimal ChatGPT-like interface that integrates multiple AI models (ChatGPT, Cl
 
 ### Vercel Deployment
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/multi-ai-chat)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ftaxats/AI-Model-compare&env=OPENAI_API_KEY,ANTHROPIC_API_KEY,GOOGLE_AI_API_KEY)
 
 1. Click the deploy button above or:
    - Fork this repository

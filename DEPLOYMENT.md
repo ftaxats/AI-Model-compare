@@ -2,7 +2,7 @@
 
 ## Quick Deploy
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/multi-ai-chat&env=OPENAI_API_KEY,ANTHROPIC_API_KEY,GOOGLE_AI_API_KEY)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ftaxats/AI-Model-compare&env=OPENAI_API_KEY,ANTHROPIC_API_KEY,GOOGLE_AI_API_KEY)
 
 ## Manual Deployment Steps
 
